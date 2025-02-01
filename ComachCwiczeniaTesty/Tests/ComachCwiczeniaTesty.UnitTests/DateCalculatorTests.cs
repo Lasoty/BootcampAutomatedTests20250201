@@ -77,8 +77,7 @@ public class DateCalculatorTests
     {
         // Test, że zwracana data jest blisko podanej daty (nie więcej niż 3 dni później)
         var date = new DateTime(2024, 2, 23);
-        cut.GetNextBusinessDay(date).Should().BeCloseTo(date,
-            TimeSpan.FromDays(3));
+        cut.GetNextBusinessDay(date).Should().BeCloseTo(date, TimeSpan.FromDays(3));
     }
     [Test]
     public void GetNextBusinessDay_ShouldBeOnWeekday()
