@@ -4,7 +4,7 @@ using OpenQA.Selenium.Chrome;
 
 namespace ComarchCwiczeniaTesty.E2e.Tests;
 
-public class Tests
+public class HerokuappTests
 {
     private IWebDriver driver;
 
@@ -50,5 +50,27 @@ public class Tests
         // Assert
         var successMessage = driver.FindElement(By.Id("flash"));
         successMessage.Text.Should().Contain("You logged into a secure area!");
+    }
+
+    [Test]
+    public void IncorrectLoginTest()
+    {
+        // Arrange
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/login");
+
+        IWebElement userNameField = driver.FindElement(By.Id("username"));
+        IWebElement passwordField = driver.FindElement(By.Id("password"));
+
+        userNameField.SendKeys("wrongUser");
+        passwordField.SendKeys("wrongPassword");
+
+        var buttonLogin = driver.FindElement(By.XPath("//*[@id=\"login\"]/button"));
+
+        // Act
+        buttonLogin.Click();
+
+        // Assert
+        var errorMessage = driver.FindElement(By.Id("flash"));
+        errorMessage.Text.Should().Contain("Your username is invalid!");
     }
 }
