@@ -12,8 +12,18 @@ public class HerokuappTests
     [SetUp]
     public void Setup()
     {
+        ChromeOptions options = new();
+        options.AddArgument("headless");
+        options.AddArgument("--disable-gpu");
+        options.AddArgument("--window-size=1920,1080");
+        options.AddArgument("--disable-dev-shm-usage");
+        options.AddArgument("--no-sandbox");
+        options.AddArgument("--ignore-certificate-errors");
+        options.AddArgument("--allow-insecure-localhost");
+        options.AddArgument("--lang=en-US");
+
         new WebDriverManager.DriverManager().SetUpDriver(new WebDriverManager.DriverConfigs.Impl.ChromeConfig());
-        driver = new ChromeDriver();
+        driver = new ChromeDriver(options);
         driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
     }
 
@@ -163,5 +173,15 @@ public class HerokuappTests
         resultText.Text.Should().Contain("You entered: Selenium test");
     }
 
+    [Test]
+    public void TestDynamicLoading()
+    {
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/dynamic_loading/1");
+        var startButton = driver.FindElement(By.XPath("//*[@id=\"start\"]/button"));
+        startButton.Click();
 
+        WebDriverWait wait = new(driver, TimeSpan.FromSeconds(10));
+        var loadedElement = wait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id("finish")));
+        loadedElement.Text.Should().Be("Hello World!");
+    }
 }
