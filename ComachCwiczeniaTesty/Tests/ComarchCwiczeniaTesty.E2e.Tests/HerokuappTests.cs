@@ -113,4 +113,55 @@ public class HerokuappTests
         resultText.Text.Should().Contain("You successfully clicked an alert");
 
     }
+
+    [Test]
+    public void HandleJavaScriptConfirmAlerts()
+    {
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/javascript_alerts");
+        var alertButton = driver.FindElement(By.XPath("//*[@id=\"content\"]/div/ul/li[2]/button"));
+        alertButton.Click();
+
+        var alert = driver.SwitchTo().Alert();
+
+        alert.Text.Should().Be("I am a JS Confirm");
+        alert.Accept();
+
+        var resultText = driver.FindElement(By.Id("result"));
+        resultText.Text.Should().Contain("You clicked: Ok");
+    }
+
+    [Test]
+    public void HandleJavaScriptDismissAlerts()
+    {
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/javascript_alerts");
+        var alertButton = driver.FindElement(By.XPath("//*[@id=\"content\"]/div/ul/li[2]/button"));
+        alertButton.Click();
+
+        var alert = driver.SwitchTo().Alert();
+
+        alert.Text.Should().Be("I am a JS Confirm");
+        alert.Dismiss();
+
+        var resultText = driver.FindElement(By.Id("result"));
+        resultText.Text.Should().Contain("You clicked: Cancel");
+    }
+
+    [Test]
+    public void HandleJavaScriptInputAlerts()
+    {
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/javascript_alerts");
+        var alertButton = driver.FindElement(By.XPath("//*[@id=\"content\"]/div/ul/li[3]/button"));
+        alertButton.Click();
+
+        var alert = driver.SwitchTo().Alert();
+
+        alert.Text.Should().Be("I am a JS prompt");
+        alert.SendKeys("Selenium test");
+        alert.Accept();
+
+        var resultText = driver.FindElement(By.Id("result"));
+        resultText.Text.Should().Contain("You entered: Selenium test");
+    }
+
+
 }
