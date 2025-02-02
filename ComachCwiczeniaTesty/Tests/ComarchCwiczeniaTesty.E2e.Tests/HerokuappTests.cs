@@ -1,6 +1,7 @@
 using FluentAssertions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 namespace ComarchCwiczeniaTesty.E2e.Tests;
 
@@ -72,5 +73,44 @@ public class HerokuappTests
         // Assert
         var errorMessage = driver.FindElement(By.Id("flash"));
         errorMessage.Text.Should().Contain("Your username is invalid!");
+    }
+
+    [Test]
+    public void CheckboxIsCheckedTest()
+    {
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/checkboxes");
+        var checkbox = driver.FindElement(By.XPath("//*[@id=\"checkboxes\"]/input[2]"));
+        checkbox.Selected.Should().BeTrue();
+    }
+
+    [Test]
+    public void DropdownTest()
+    {
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/dropdown");
+        var dropdown = driver.FindElement(By.Id("dropdown"));
+        var selectElement = new SelectElement(dropdown);
+        selectElement.SelectByValue("1");
+
+        selectElement.SelectedOption.Text.Should().Be("Option 1");
+
+        selectElement.SelectByValue("2");
+        selectElement.SelectedOption.Text.Should().Be("Option 2");
+    }
+
+    [Test]
+    public void HandleJavaScriptAlerts()
+    {
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/javascript_alerts");
+        var alertButton = driver.FindElement(By.XPath("//*[@id=\"content\"]/div/ul/li[1]/button"));
+        alertButton.Click();
+
+        var alert = driver.SwitchTo().Alert();
+
+        alert.Text.Should().Be("I am a JS Alert");
+        alert.Accept();
+
+        var resultText = driver.FindElement(By.Id("result"));
+        resultText.Text.Should().Contain("You successfully clicked an alert");
+
     }
 }
