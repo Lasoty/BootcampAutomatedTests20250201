@@ -9,7 +9,7 @@ public class InvoiceServiceTests
     [SetUp]
     public void SetUp()
     {
-        cut = new InvoiceService();
+        cut = new InvoiceService(null, null);
     }
 
     [Test]

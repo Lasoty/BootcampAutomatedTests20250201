@@ -8,6 +8,23 @@ namespace ComachCwiczeniaTesty;
 
 public class InvoiceService
 {
+    private readonly ITaxService _taxService;
+    private readonly IDiscountService _discountService;
+
+    public InvoiceService(ITaxService taxService, IDiscountService discountService)
+    {
+        _taxService = taxService;
+        _discountService = discountService;
+    }
+
+    public Task<decimal> CalculateTotal(decimal amount, string customerType)
+    {
+        var discount = _discountService.CalculateDiscount(amount, customerType);
+        var taxableAmount = amount - discount;
+        var tax = _taxService.GetTax(taxableAmount);
+        return Task.FromResult(taxableAmount + tax);
+    }
+
     public string GenerateInvoiceNumber()
     {
         var datePart = DateTime.Now.ToString("yyyyMMdd");
